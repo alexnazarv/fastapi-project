@@ -24,6 +24,7 @@ async def order(order_id: int) -> dict:
 async def profile() -> dict:
     return {"profile": "View profile user"}
 
+
 @app.get("/employee/{name}/company/{company}")
 async def get_employee(name: str, department: str, company: str) -> dict:
     return {"Employee": name, "Department": department, "Company": company}
@@ -40,6 +41,21 @@ async def login(
             example="permin0ff",
         ),
     ],
-    first_name: Annotated[str | None, Query(max_length=10)] = None,
+    first_name: Annotated[str | None, Query(max_length=10, pattern="^J|s$")] = None,
 ) -> dict:
     return {"user": username, "Name": first_name}
+
+
+@app.get("/user")
+async def search(
+    people: Annotated[
+        list[str],
+        Query(
+            min_length=1,
+            max_length=5,
+            description="List of user names",
+            example=["Tom", "Sam"],
+        ),
+    ],
+) -> dict:
+    return {"user": people}
