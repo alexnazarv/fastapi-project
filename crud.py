@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, Body, HTTPException
+from fastapi import Body, FastAPI, HTTPException, status
 
 app = FastAPI()
 
@@ -36,6 +36,7 @@ async def delete_message(message_id: int) -> str:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
     messages_db.pop(message_id)
     return f"Message ID={message_id} deleted!"
+
 
 @app.delete("/messages", status_code=status.HTTP_200_OK)
 async def delete_messages() -> str:

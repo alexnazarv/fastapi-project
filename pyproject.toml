@@ -8,3 +8,149 @@ dependencies = [
     "fastapi>=0.127.0",
     "uvicorn[standard]>=0.40.0",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "pip>=25.3",
+    "ruff>=0.14.10",
+]
+
+[tool.ruff]
+src = [
+  "app"
+]
+
+extend-exclude = ["test.ipynb"]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "*auth_service*/",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "__init__.py"
+]
+
+# Same as Black.
+line-length = 100
+indent-width = 4
+
+[tool.ruff.per-file-ignores]
+"tests/*" = [
+  "S101", # Use of `assert` detected
+  "D100", # Missing docstring in public module
+  "RUF015", # Prefer `next(iter(result.keys()))` over single element
+  ]
+
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["ALL"]
+ignore = [
+    # "TRY201", # Create your own exception
+    # "PD901", # Avoid using the generic variable name `df` for DataFrames
+    # "PGH003", # Use specific rule codes when ignoring type issues
+    # "COM812", "ISC001", # The following rules may cause conflicts when used with the formatter: `COM812`, `ISC001`. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding them to the `ignore` configuration.
+    # "S311", # Standard pseudo-random generators are not suitable for cryptographic purposesRuff,
+    # "PTH123",  # `open()` should be replaced by `Path.open()`
+    # "PLC0206", # Extracting value from dictionary without calling `.items()`
+    # "PLR2004", # Magic value used in comparison, consider replacing `5` with a constant variable
+    # "TC001", # Move application import `app.game_lib.card.Card` into a type-checking
+    # "G004", # Logging statement uses f-string
+    # "ASYNC110", # ASYNC110 Use `anyio.Event` instead of awaiting `anyio.sleep` in a `while` loopRuff
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pylint]
+max-args = 20
+
+[tool.ruff.lint.mccabe]
+# Flag errors (`C901`) whenever the complexity level exceeds 5.
+max-complexity = 11
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = true
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+testpaths = [
+    "tests/",
+]
+pythonpath = "."
+
+
+[tool.mypy]
+exclude = ["venv", ".venv"]
+allow_redefinition = false
+check_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+no_implicit_reexport = true
+local_partial_types = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+explicit_package_bases = true
+disallow_untyped_defs = true
