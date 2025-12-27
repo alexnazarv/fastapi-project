@@ -4,7 +4,7 @@ from fastapi import FastAPI, Path, Query
 
 app = FastAPI()
 
-
+ 
 @app.get("/")
 async def welcome() -> dict:
     return {"message": "Hello, FastAPI!"}
