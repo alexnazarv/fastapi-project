@@ -1,7 +1,15 @@
-from fastapi import FastAPI, HTTPException, status
+from typing import List
+
+from fastapi import FastAPI, Form, HTTPException, Request, status
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 app = FastAPI()
+
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Модель для входных данных (запросов: создание и обновление)
@@ -58,3 +66,28 @@ async def delete_message(message_id: int) -> dict:
 async def delete_messages() -> dict:
     messages_db.clear()
     return {"detail": "All messages deleted!"}
+
+@app.get("/web/messages", response_class=HTMLResponse)
+async def get_messages_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "messages": messages_db})
+
+# Страница создания сообщения
+@app.get("/web/messages/create", response_class=HTMLResponse)
+async def get_create_message_page(request: Request):
+    return templates.TemplateResponse("create.html", {"request": request})
+
+# Обработка формы создания сообщения
+@app.post("/web/messages", response_class=HTMLResponse)
+async def create_message_form(request: Request, content: str = Form(...)):
+    next_id = max((msg.id for msg in messages_db), default=-1) + 1
+    new_message = Message(id=next_id, content=content)
+    messages_db.append(new_message)
+    return templates.TemplateResponse("index.html", {"request": request, "messages": messages_db})
+
+# Страница одного сообщения
+@app.get("/web/messages/{message_id}", response_class=HTMLResponse)
+async def get_message_detail_page(request: Request, message_id: int):
+    for message in messages_db:
+        if message.id == message_id:
+            return templates.TemplateResponse("detail.html", {"request": request, "message": message})
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Сообщение не найдено")
